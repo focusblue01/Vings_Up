@@ -1,0 +1,7 @@
+{
+  "name": "Vings Up",
+  "description": "A comprehensive AI-powered social media management tool designed specifically for pet grooming professionals to automate portfolio creation and customer engagement.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

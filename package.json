@@ -1,5 +1,5 @@
 {
-  "name": "vings-up",
+  "name": "paws-n-pose",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,9 +10,16 @@
   },
   "dependencies": {
     "@google/genai": "^1.41.0",
-    "react-router-dom": "^7.13.0",
+    "axios": "^1.13.5",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11",
+    "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react": "^19.2.4"
+    "react-router-dom": "^7.13.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

@@ -1,0 +1,33 @@
+[2026-02-20] Context Restoration & Instagram Login Implementation
+
+## 1. Project Rebranding
+- **Old Name**: Vings_Up
+- **New Name**: PawsNPose
+- **Changes**:
+  - Updated `package.json` name to `paws-n-pose`.
+  - Updated `index.html` title.
+  - Basic UI updates for PawsNPose branding.
+
+## 2. Instagram Login Implementation (Extended Auth)
+- **Status**: Completed
+- **Features**:
+  - Implemented Mock OAuth flow for local development.
+  - Configured Real Instagram OAuth (requires real credentials).
+  - Added user database schema in `server/users.db`:
+    - `instagram_id`: Unique ID from Instagram.
+    - `account_type`: Stored from Instagram profile.
+    - `media_count`: Stored from Instagram profile.
+    - `conn_status`: Track user online/offline status (1/0).
+  - **New User Flow**:
+    - Users without email (`email_or_phone`) are redirected to `/complete-signup`.
+    - `CompleteSignup.tsx`: Allows new Instagram users to set Email & Password.
+  - **Returning User Flow**:
+    - Direct login -> `/home`.
+  - **Logout**:
+    - Updates `conn_status` to 0 in DB.
+
+## 3. Current Session Actions
+- Restored `task.md` from previous session history.
+- Verified backend code (`server/server.cjs`) and database schema (`database.cjs`).
+- Confirmed project structure and file existence.
+- Created this log file `log/work_road.log` to track progress.

@@ -1,5 +1,5 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StatCardProps } from '../types';
 
 const StatCard: React.FC<StatCardProps> = ({ label, value, trend, icon, colorClass }) => (
@@ -31,35 +31,60 @@ const StatCard: React.FC<StatCardProps> = ({ label, value, trend, icon, colorCla
 );
 
 const Insights: React.FC = () => {
-  const posts = [
-    { title: "벨라의 여름맞이 미용", platform: "instagram", status: "sent", likes: 124, comments: 8, time: "2시간 전", imgId: 100 },
-    { title: "스파 데이 세션", platform: "facebook", status: "sent", likes: 45, comments: 12, time: "어제", imgId: 101 },
-    { title: "크리에이티브 컷 - 푸들", platform: "instagram", status: "sent", likes: 892, comments: 45, time: "3일 전", imgId: 102 },
-    { title: "테리어 변신 완료", platform: "tiktok", status: "sent", likes: 1200, comments: 32, time: "4일 전", imgId: 103 },
-    { title: "강아지 첫 미용", platform: "instagram", status: "pending", likes: 0, comments: 0, time: "5일 전", imgId: 104 },
-    { title: "클래식 슈나우저 컷", platform: "facebook", status: "sent", likes: 56, comments: 3, time: "1주 전", imgId: 105 },
-  ];
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      navigate('/login');
+      return;
+    }
+    const userData = JSON.parse(userStr);
+    setUser(userData);
+
+    fetch(`http://localhost:3001/api/posts/${userData.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setPosts(data.posts || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch posts', err);
+        setLoading(false);
+      });
+  }, [navigate]);
+
+  const totalLikes = posts.reduce((sum, p) => sum + (p.likes || 0), 0);
+  const totalPosts = posts.length;
+  const avgEngagement = totalPosts > 0 ? ((totalLikes / totalPosts) * 0.1).toFixed(1) : '0';
+
+  if (loading) {
+    return <div className="p-10 text-center">불러오는 중...</div>;
+  }
 
   return (
-    <div className="p-4 md:p-8 lg:p-12 space-y-8 max-w-[1600px] mx-auto w-full">
+    <div aria-label="Insights dashboard" className="p-4 md:p-8 lg:p-12 space-y-8 max-w-[1600px] mx-auto w-full">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">게시 기록 및 인사이트</h2>
           <p className="text-sm text-slate-400">자동 생성된 게시물 추적 및 스타일 진화 분석</p>
         </div>
         <div className="flex gap-4">
-           <button className="p-2 rounded-full hover:bg-slate-100 relative">
+          <button className="p-2 rounded-full hover:bg-slate-100 relative">
             <span className="material-symbols-outlined">notifications</span>
             <span className="absolute top-1 right-1 size-2 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
-           <img src="https://picsum.photos/id/64/100/100" className="size-10 rounded-full border" alt="User" />
+          <img src="https://picsum.photos/id/64/100/100" className="size-10 rounded-full border" alt="User" />
         </div>
       </div>
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard label="총 좋아요 수" value="12.4k" trend={12} icon="favorite" colorClass="bg-rose-50 text-rose-500" />
-        <StatCard label="평균 참여율" value="8.5%" trend={5.2} icon="dataset" colorClass="bg-primary/10 text-primary" />
-        <StatCard label="생성된 게시물" value="142" icon="auto_awesome" colorClass="bg-indigo-50 text-indigo-500" />
+        <StatCard label="총 좋아요 수" value={totalLikes >= 1000 ? `${(totalLikes / 1000).toFixed(1)}k` : totalLikes} trend={12} icon="favorite" colorClass="bg-rose-50 text-rose-500" />
+        <StatCard label="평균 참여율" value={`${avgEngagement}%`} trend={5.2} icon="dataset" colorClass="bg-primary/10 text-primary" />
+        <StatCard label="생성된 게시물" value={totalPosts} icon="auto_awesome" colorClass="bg-indigo-50 text-indigo-500" />
       </section>
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
@@ -69,7 +94,7 @@ const Insights: React.FC = () => {
             <div className="h-24 bg-gradient-to-r from-primary to-blue-400 relative">
               <div className="absolute -bottom-10 left-6">
                 <div className="size-20 rounded-xl bg-white dark:bg-slate-800 p-1 shadow-md">
-                   <img src="https://picsum.photos/id/1012/200/200" className="w-full h-full rounded-lg object-cover" alt="Logo" />
+                  <img src="https://picsum.photos/id/1012/200/200" className="w-full h-full rounded-lg object-cover" alt="Logo" />
                 </div>
               </div>
             </div>
@@ -122,9 +147,9 @@ const Insights: React.FC = () => {
             {posts.map((post, i) => (
               <div key={i} className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden hover:shadow-md transition-all">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img src={`https://picsum.photos/id/${post.imgId}/400/300`} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" alt={post.title} />
+                  <img src={post.img_url || `https://picsum.photos/id/${100 + i}/400/300`} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" alt={post.title} />
                   <div className="absolute top-3 right-3 bg-white/90 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm">
-                    {post.platform === 'instagram' && <span className="material-symbols-outlined text-purple-600 text-sm">photo_camera</span>}
+                    {post.platform === 'instagram' && <span className="material-symbols-outlined text-pink-600 text-sm">photo_camera</span>}
                     {post.platform === 'facebook' && <span className="material-symbols-outlined text-blue-600 text-sm">facebook</span>}
                     {post.platform === 'tiktok' && <span className="material-symbols-outlined text-black text-sm">music_note</span>}
                     {post.platform === 'instagram' ? '인스타' : post.platform === 'facebook' ? '페북' : '틱톡'}
@@ -135,17 +160,19 @@ const Insights: React.FC = () => {
                 </div>
                 <div className="p-4">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] font-medium px-2 py-0.5 bg-slate-100 rounded text-slate-500">{post.time}</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${post.status === 'sent' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {post.status === 'sent' ? '전송됨' : '승인 대기 중'}
+                    <span className="text-[10px] font-medium px-2 py-0.5 bg-slate-100 rounded text-slate-500">
+                      {new Date(post.created_at).toLocaleDateString()}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${post.status === 'sent' ? 'bg-green-50 text-green-600' : post.status === 'draft' ? 'bg-slate-100 text-slate-600' : 'bg-amber-50 text-amber-600'}`}>
+                      {post.status === 'sent' ? '전송됨' : post.status === 'draft' ? '임시저장' : '승인 대기 중'}
                     </span>
                   </div>
                   <h3 className="font-bold truncate text-sm">{post.title}</h3>
                   <div className="mt-4 flex items-center justify-between border-t pt-3">
                     <div className="flex gap-4">
-                       <div className="flex items-center gap-1 text-slate-400 text-xs">
+                      <div className="flex items-center gap-1 text-slate-400 text-xs">
                         <span className="material-symbols-outlined text-sm text-primary">favorite</span>
-                        {post.likes > 0 ? (post.likes >= 1000 ? `${(post.likes/1000).toFixed(1)}k` : post.likes) : '--'}
+                        {post.likes > 0 ? (post.likes >= 1000 ? `${(post.likes / 1000).toFixed(1)}k` : post.likes) : '--'}
                       </div>
                       <div className="flex items-center gap-1 text-slate-400 text-xs">
                         <span className="material-symbols-outlined text-sm text-primary">chat_bubble</span>

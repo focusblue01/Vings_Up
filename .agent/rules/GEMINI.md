@@ -95,6 +95,14 @@ When auto-applying an agent, inform the user:
 
 ## TIER 0: UNIVERSAL RULES (Always Active)
 
+### 🖥️ OS & Environment Context
+
+> **MANDATORY:** Always consider the following environment details before executing commands or providing shell-specific instructions.
+- **Operating System:** Windows
+- **Shell:** PowerShell
+- **Path formatting:** Use backslashes (`\`) for Windows paths in shell commands. Use forward slashes (`/`) in web/Node.js configurations.
+- **Command Execution:** Keep PowerShell execution policies and syntax in mind when running commands.
+
 ### 🌐 Language Handling
 
 When user's prompt is NOT in English:
@@ -142,6 +150,15 @@ When user's prompt is NOT in English:
 1. What is the GOAL of this agent/skill?
 2. What PRINCIPLES must I apply?
 3. How does this DIFFER from generic output?
+
+### 📝 Auto-Logging Protocol
+
+**Trigger:** When the user appends `#log` to their request.
+
+**Protocol:**
+1. Execute the user's request as normal.
+2. Before finishing the task, append a concise summary of the task, actions taken, and the current state to the file `log/work_road.log`.
+3. Format the log succinctly and do not wait for explicit instruction to perform this logging if the `#log` tag is present.
 
 ---
 

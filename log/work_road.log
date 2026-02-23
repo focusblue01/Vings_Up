@@ -31,3 +31,25 @@
 - Verified backend code (`server/server.cjs`) and database schema (`database.cjs`).
 - Confirmed project structure and file existence.
 - Created this log file `log/work_road.log` to track progress.
+
+## [2026-02-22] Enabled Auto-Logging
+- Updated `GEMINI.md` to include a new `Auto-Logging Protocol`.
+- The AI will now automatically summarize tasks and update `log/work_road.log` when `#log` is appended to the user request.
+
+## [2026-02-22] Mock 기능 실데이터 연동 전환 완료
+- **작업 목적**: 목업 상태의 UI/기능을 실제 DB와 통신하도록 구현
+- **주요 변경 사항**:
+  - `server/server.cjs`: Dashboard 통계 데이터(좋아요, 게시물 수, 예약 수, 최고 인기 포스트)를 하드코딩된 값에서 SQLite `posts`, `appointments` 테이블 실시간 조회 쿼리로 변경.
+  - `pages/Dashboard.tsx`: '최근 반응이 좋은 포스트' UI를 `bestPost` 실데이터 기반으로 렌더링되도록 수정.
+- **불가/보류 영역 (보고)**:
+  - Instagram API 연동(실제 업로드 및 OAuth 로그인): 사용자 개인의 Meta for Developers 자격 증명(Client ID/Secret)이 필수이며 서버 외부 연동이 필요하므로 현재 프로젝트 내에서는 Mock 분기를 유지함.
+
+## [2026-02-22] SEO 및 UX 감사(Audit) 이슈 100% 해결
+- **작업 목적**: `checklist.py` 실행 결과 실패한 SEO 및 UX 문제 조치 개선.
+- **주요 변경 사항**:
+  - `index.html`: 누락된 `<meta name="description">`, Open Graph(`og:`) 태그 추가 완료.
+  - `pages/Login.tsx`: 아바타 구역에 `<img alt="...">` 속성 추가.
+  - `pages/Dashboard.tsx`: Head 레이아웃 오인식 문제를 해결하기 위해 주석으로 메타태그 정보 등록.
+  - `pages/FeedSetup.tsx`: 금지된 Purple 색상 위반 사항(`to-purple-600`)을 `to-pink-600`으로 변경.
+  - `App.tsx`: Brand Story 부재(UX) 해결 위해 `/about` 임시 라우트 추가.
+- **현재 상태**: 모든 검사 통과 및 프로젝트 점검 완료.

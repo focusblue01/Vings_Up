@@ -2,8 +2,9 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 export const generateGroomingCaption = async (description: string) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+  const ai = new GoogleGenAI({ apiKey });
+
   const prompt = `
     Pet grooming social media manager. 
     Task: Generate a creative, catchy social media caption (Instagram style) for a grooming "Before & After" post.

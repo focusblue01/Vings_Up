@@ -32,11 +32,10 @@ const Settings: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                  activeTab === tab.id 
-                    ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id
+                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
                     : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
+                  }`}
               >
                 <span className="material-symbols-outlined text-lg">{tab.icon}</span>
                 {tab.label}
@@ -88,44 +87,44 @@ const Settings: React.FC = () => {
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                 <button className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">취소</button>
-                 <button className="px-6 py-2 bg-primary text-white text-sm font-bold rounded-xl shadow-md hover:bg-primary-dark transition-all">변경사항 저장</button>
+                <button className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">취소</button>
+                <button className="px-6 py-2 bg-primary text-white text-sm font-bold rounded-xl shadow-md hover:bg-primary-dark transition-all">변경사항 저장</button>
               </div>
             </div>
           )}
 
           {activeTab === 'ai' && (
             <div className="space-y-6">
-               <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800/30 flex gap-4">
-                 <span className="material-symbols-outlined text-indigo-500">info</span>
-                 <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">
-                   AI가 생성하는 글의 어투를 설정할 수 있습니다. 설정된 톤앤매너에 맞춰 인스타그램 캡션과 해시태그가 생성됩니다.
-                 </p>
-               </div>
+              <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800/30 flex gap-4">
+                <span className="material-symbols-outlined text-indigo-500">info</span>
+                <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">
+                  AI가 생성하는 글의 어투를 설정할 수 있습니다. 설정된 톤앤매너에 맞춰 인스타그램 캡션과 해시태그가 생성됩니다.
+                </p>
+              </div>
 
-               <div className="space-y-4">
-                 <h4 className="font-bold text-sm">브랜드 페르소나</h4>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                   {['친근하고 귀여운', '전문적이고 신뢰감 있는', '간결하고 위트있는', '감성적이고 따뜻한'].map(tone => (
-                     <label key={tone} className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
-                       <input type="radio" name="tone" className="text-primary focus:ring-primary h-4 w-4" defaultChecked={tone === '친근하고 귀여운'} />
-                       <span className="text-sm font-medium group-hover:text-primary transition-colors">{tone}</span>
-                     </label>
-                   ))}
-                 </div>
-               </div>
+              <div className="space-y-4">
+                <h4 className="font-bold text-sm">브랜드 페르소나</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {['친근하고 귀여운', '전문적이고 신뢰감 있는', '간결하고 위트있는', '감성적이고 따뜻한'].map(tone => (
+                    <label key={tone} className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                      <input type="radio" name="tone" className="text-primary focus:ring-primary h-4 w-4" defaultChecked={tone === '친근하고 귀여운'} />
+                      <span className="text-sm font-medium group-hover:text-primary transition-colors">{tone}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-               <div className="space-y-3">
-                 <label className="text-sm font-bold">자주 쓰는 이모지</label>
-                 <div className="flex flex-wrap gap-2">
-                   {['🐶', '✂️', '❤️', '✨', '🐾'].map(emoji => (
-                     <button key={emoji} className="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 hover:border-primary transition-colors text-lg">{emoji}</button>
-                   ))}
-                   <button className="size-10 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-300 hover:text-primary hover:border-primary transition-all">
-                     <span className="material-symbols-outlined">add</span>
-                   </button>
-                 </div>
-               </div>
+              <div className="space-y-3">
+                <label className="text-sm font-bold">자주 쓰는 이모지</label>
+                <div className="flex flex-wrap gap-2">
+                  {['🐶', '✂️', '❤️', '✨', '🐾'].map(emoji => (
+                    <button key={emoji} className="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 hover:border-primary transition-colors text-lg">{emoji}</button>
+                  ))}
+                  <button className="size-10 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-300 hover:text-primary hover:border-primary transition-all">
+                    <span className="material-symbols-outlined">add</span>
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -155,10 +154,10 @@ const Settings: React.FC = () => {
           )}
 
           {activeTab === 'integration' && (
-             <div className="space-y-6">
-               <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700 gap-4">
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700 gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-lg bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 flex items-center justify-center text-white">
+                  <div className="size-12 rounded-lg bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-600 flex items-center justify-center text-white">
                     <span className="material-symbols-outlined">photo_camera</span>
                   </div>
                   <div>
@@ -180,7 +179,7 @@ const Settings: React.FC = () => {
                 </div>
                 <button className="text-xs font-bold text-primary px-4 py-2 hover:bg-primary/5 rounded-lg transition-colors">연결하기</button>
               </div>
-             </div>
+            </div>
           )}
         </div>
       </div>

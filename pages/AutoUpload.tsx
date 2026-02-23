@@ -1,16 +1,50 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { generateGroomingCaption } from '../services/gemini';
 
 const AutoUpload: React.FC = () => {
+  const navigate = useNavigate();
   const [caption, setCaption] = useState("우와! 이 변신 좀 보세요! 🐶✂️ 벨라가 오늘 풀 코스 스파를 받고 슈퍼스타처럼 변신했어요. 귀여운 눈망울을 돋보이게 하기 위해 테디베어 컷으로 미용했답니다. 오늘 미용하는 동안 너무 얌전하고 착했어요! ❤️");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const handleRegenerate = async () => {
     setIsGenerating(true);
     const newCaption = await generateGroomingCaption("Poodle named Bella, full course spa, teddy bear cut, behaved well");
     setCaption(newCaption || caption);
     setIsGenerating(false);
+  };
+
+  const handlePublish = async (isDraft: boolean) => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      alert('로그인이 필요합니다.');
+      return navigate('/login');
+    }
+    const user = JSON.parse(userStr);
+
+    setIsPublishing(true);
+    try {
+      const response = await fetch('http://localhost:3001/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          caption: caption,
+          imageUrl: 'https://picsum.photos/id/237/800/800',
+          isDraft
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || data.details || '업로드 실패');
+
+      alert(isDraft ? '임시 저장되었습니다.' : '게시가 완료되었습니다!');
+      navigate('/insights');
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   return (
@@ -24,7 +58,7 @@ const AutoUpload: React.FC = () => {
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">미용 결과 자동 업로드</h1>
             <p className="text-slate-500 max-w-2xl">"비포 & 애프터" 사진을 업로드하면 AI가 피드에 딱 맞는 캡션과 해시태그를 자동으로 생성해 드립니다.</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/30 text-primary font-bold hover:bg-primary/5 transition">
+          <button onClick={() => handlePublish(true)} disabled={isPublishing} className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/30 text-primary font-bold hover:bg-primary/5 transition disabled:opacity-50">
             <span className="material-symbols-outlined text-lg">draft</span>
             임시 저장
           </button>
@@ -42,14 +76,14 @@ const AutoUpload: React.FC = () => {
               </h3>
               <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-bold">Step 1</span>
             </div>
-            
+
             <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-xl min-h-[400px] p-8 text-center cursor-pointer hover:border-primary transition-all">
               <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4">
                 <span className="material-symbols-outlined text-3xl">cloud_upload</span>
               </div>
               <p className="text-lg font-bold mb-1">클릭하여 업로드하거나 여기로 파일을 드래그하세요</p>
               <p className="text-sm text-slate-400 mb-8">SVG, PNG, JPG 또는 GIF (최대 800x400px)</p>
-              
+
               <div className="flex gap-6">
                 {['BEFORE', 'AFTER'].map(type => (
                   <div key={type} className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
@@ -81,8 +115,8 @@ const AutoUpload: React.FC = () => {
                 AI 캡션 생성 결과
               </div>
               <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                 <button className="p-1.5 rounded bg-white shadow-sm text-primary"><span className="material-symbols-outlined text-lg">phone_iphone</span></button>
-                 <button className="p-1.5 rounded text-slate-400"><span className="material-symbols-outlined text-lg">public</span></button>
+                <button className="p-1.5 rounded bg-white shadow-sm text-primary"><span className="material-symbols-outlined text-lg">phone_iphone</span></button>
+                <button className="p-1.5 rounded text-slate-400"><span className="material-symbols-outlined text-lg">public</span></button>
               </div>
             </div>
 
@@ -99,7 +133,7 @@ const AutoUpload: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <label className="text-sm font-bold">게시물 내용</label>
-                  <button 
+                  <button
                     onClick={handleRegenerate}
                     disabled={isGenerating}
                     className="text-xs font-bold text-primary flex items-center gap-1 hover:underline disabled:opacity-50"
@@ -108,7 +142,7 @@ const AutoUpload: React.FC = () => {
                     다시 생성
                   </button>
                 </div>
-                <textarea 
+                <textarea
                   className="w-full h-40 p-4 text-sm bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-1 focus:ring-primary leading-relaxed resize-none"
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
@@ -147,9 +181,11 @@ const AutoUpload: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-3">
-            <button className="w-full py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined">send</span>
-              지금 게시하기
+            <button onClick={() => handlePublish(false)} disabled={isPublishing} className="w-full py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+              <span className={`material-symbols-outlined ${isPublishing ? 'animate-spin' : ''}`}>
+                {isPublishing ? 'sync' : 'send'}
+              </span>
+              {isPublishing ? '업로드 중...' : '지금 게시하기'}
             </button>
             <button className="w-full py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-2 hover:bg-slate-50">
               <span className="material-symbols-outlined text-slate-400">event</span>

@@ -1,7 +1,17 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const FeedSetup: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+  }, []);
+
+  const isInstaLinked = user?.conn_status === 1;
+
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto w-full">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
@@ -30,24 +40,28 @@ const FeedSetup: React.FC = () => {
                 <span className="flex items-center justify-center size-8 rounded-full bg-slate-100 dark:bg-slate-800 text-sm font-bold">1</span>
                 SNS 계정 연결
               </h2>
-              <span className="text-sm font-medium text-slate-400">2개 중 1개 연결됨</span>
+              <span className="text-sm font-medium text-slate-400">2개 중 {isInstaLinked ? 1 : 0}개 연결됨</span>
             </div>
-            
+
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl border border-primary/20 bg-primary/5 gap-4">
+              <div className={`flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl border gap-4 ${isInstaLinked ? 'border-primary/20 bg-primary/5' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'}`}>
                 <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-lg bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 flex items-center justify-center text-white">
+                  <div className="size-12 rounded-lg bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-600 flex items-center justify-center text-white">
                     <span className="material-symbols-outlined">photo_camera</span>
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold">Instagram</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700">연동됨</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${isInstaLinked ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>{isInstaLinked ? '연동됨' : '미연동'}</span>
                     </div>
-                    <p className="text-sm text-slate-500">@pawsome_cuts</p>
+                    <p className="text-sm text-slate-500">{isInstaLinked ? `@${user?.username}` : '인스타그램 계정을 연동해 주세요.'}</p>
                   </div>
                 </div>
-                <button className="text-sm font-semibold text-slate-400 hover:text-red-500 px-3 py-1">연동 해제</button>
+                {isInstaLinked ? (
+                  <button className="text-sm font-semibold text-slate-400 hover:text-red-500 px-3 py-1">연동 해제</button>
+                ) : (
+                  <button onClick={() => window.location.href = 'http://localhost:3001/api/auth/instagram'} className="rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-white text-sm font-semibold px-4 py-2">연결하기</button>
+                )}
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 gap-4">
@@ -83,7 +97,7 @@ const FeedSetup: React.FC = () => {
                 학습 준비 완료
               </div>
             </div>
-            
+
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between text-sm mb-2 font-medium">
                 <span>스타일 프로필 완성도</span>
@@ -117,7 +131,7 @@ const FeedSetup: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               {[1, 2].map(i => (
                 <div key={i} className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer">
-                  <img src={`https://picsum.photos/id/${i+10}/400/400`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Dog post" />
+                  <img src={`https://picsum.photos/id/${i + 10}/400/400`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Dog post" />
                   <div className="absolute top-2 right-2 size-6 bg-green-500 rounded-full flex items-center justify-center text-white border-2 border-white">
                     <span className="material-symbols-outlined text-xs">check</span>
                   </div>
@@ -135,7 +149,7 @@ const FeedSetup: React.FC = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
               <h4 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider text-xs">감지된 스타일 태그</h4>
               <div className="flex flex-wrap gap-2">
@@ -145,7 +159,7 @@ const FeedSetup: React.FC = () => {
                   </span>
                 ))}
                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-md border border-dashed border-slate-200 text-slate-400 text-xs">
-                   감지 중...
+                  감지 중...
                 </span>
               </div>
             </div>

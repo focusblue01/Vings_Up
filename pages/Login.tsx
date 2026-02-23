@@ -74,7 +74,7 @@ const Login: React.FC = () => {
           <div className="flex items-center gap-4 text-sm font-semibold bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 w-fit">
             <div className="flex -space-x-3">
               {[1, 2, 3].map(i => (
-                <img key={i} src={`https://picsum.photos/id/${i + 50}/100/100`} className="h-10 w-10 rounded-full border-2 border-white/50" />
+                <img key={i} alt={`User ${i}`} src={`https://picsum.photos/id/${i + 50}/100/100`} className="h-10 w-10 rounded-full border-2 border-white/50" />
               ))}
             </div>
             <span>2,000명 이상의 미용사들이 선택</span>
@@ -85,7 +85,7 @@ const Login: React.FC = () => {
       {/* Right Section (Form) */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 md:px-24 lg:px-20 xl:px-32 py-12">
         <div className="mb-10">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
+          <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tight">
             {isRegistering ? '회원가입' : '반갑습니다!'}
           </h2>
           <p className="text-slate-500 dark:text-slate-400">

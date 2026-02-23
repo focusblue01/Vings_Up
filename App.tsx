@@ -29,7 +29,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="flex h-screen overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} toggle={() => setSidebarOpen(!isSidebarOpen)} />
       <main className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark">
-        <header className="lg:hidden p-4 border-b bg-white dark:bg-slate-900 sticky top-0 z-30 flex items-center justify-between">
+        <header className="lg:hidden p-4 border-b bg-gradient-to-r from-white to-slate-50 shadow-sm dark:bg-slate-900 sticky top-0 z-30 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">pets</span>
             <span className="font-bold">Paws & Pose</span>
@@ -58,6 +58,8 @@ const App: React.FC = () => {
         <Route path="/upload" element={<ProtectedRoute><Layout><AutoUpload /></Layout></ProtectedRoute>} />
         <Route path="/insights" element={<ProtectedRoute><Layout><Insights /></Layout></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+        {/* Placeholder for About / Brand Story */}
+        <Route path="/about" element={<ProtectedRoute><Layout><div className="p-10"><h2>About Our Story & Values</h2></div></Layout></ProtectedRoute>} />
 
         {/* Default Redirects */}
         <Route path="/" element={<Navigate to="/home" replace />} />
